@@ -1,68 +1,66 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { translateFromMorseToText } from 'components/helpers/translateFromMorseToText';
-import { translateMorseToCharacter } from 'components/helpers/translateMorseToCharacter';
 import { useEffect, useState } from 'react';
+
+// HELPERS
+import { translateMorseToCharacter } from 'components/helpers/translateMorseToCharacter';
+import { useDebounce } from 'components/helpers/useDebounce';
 
 export const useMorseTranslator = () => {
 	const dotThreshold = 200;
-	const inactivityThreshold = 600;
+	const inactivityThreshold = 1000;
 
-	const [morseText, setMorseText] = useState('');
-	const [translatedText, setTranslatedText] = useState('');
-	const [lastButtonPressedDown, setLastButtonPressedDown] = useState<number | undefined>(undefined);
-	const [lastButtonPressedUp, setLastButtonPressedUp] = useState<number | undefined>(undefined);
+	const [morseText, setMorseText] = useState<string>('');
+	const [textToTranslate, setTextToTranslate] = useState<string>('');
+	const [translatedText, setTranslatedText] = useState<string>('');
+	const [lastButtonPressed, setLastButtonPressed] = useState<number | null>(null);
+	const writeValueDebounced = useDebounce(textToTranslate || '', inactivityThreshold);
 
-	const checkInactivity = (now: number | undefined) => () => {
-		console.log(lastButtonPressedUp);
-		console.log(now);
-		if (lastButtonPressedUp === now) {
-			setLastButtonPressedDown(undefined);
-			setLastButtonPressedUp(undefined);
-
-			// eslint-disable-next-line prefer-template
-			const newMorseText = morseText + ' ';
-			const newTranslatedText = translateMorseToCharacter(newMorseText);
-
-			setMorseText(newMorseText);
-			setTranslatedText(newTranslatedText);
-		}
+	const resetAll = () => {
+		setMorseText('');
+		setTextToTranslate('');
+		setTranslatedText('');
+		setLastButtonPressed(null);
 	};
 
-	useEffect(() => {
-		setTimeout(() => {
-			// eslint-disable-next-line prefer-template
-			const newMorseText = morseText + ' ';
-			const newTranslatedText = translateFromMorseToText(newMorseText);
-
-			// setMorseText(newMorseText);
-			setTranslatedText(newTranslatedText);
-
-			setLastButtonPressedDown(undefined);
-			setLastButtonPressedUp(undefined);
-		}, inactivityThreshold);
-	}, [morseText]);
-
 	const onButtonMouseDown = () => {
-		setLastButtonPressedDown(Date.now());
-		setLastButtonPressedUp(undefined);
+		setLastButtonPressed(Date.now());
 	};
 
 	const onButtonMouseUp = () => {
-		const now = Date.now();
 		let timeElapsed;
-		let morseCharacter;
-		if (lastButtonPressedDown) timeElapsed = now - lastButtonPressedDown;
-		if (timeElapsed) morseCharacter = timeElapsed < dotThreshold ? '.' : '-';
+		let newText;
+		const now = Date.now();
 
-		setLastButtonPressedDown(undefined);
-		setLastButtonPressedUp(now);
-		if (morseCharacter) setMorseText(morseText + morseCharacter);
+		setLastButtonPressed(null);
+		if (lastButtonPressed) timeElapsed = now - lastButtonPressed;
+		if (timeElapsed) newText = timeElapsed < dotThreshold ? '.' : '-';
+		if (newText) setTextToTranslate(`${textToTranslate}${newText}`);
 	};
+
+	useEffect(() => {
+		if (textToTranslate !== '') {
+			if (translateMorseToCharacter(textToTranslate)) {
+				const newMorseText = `${morseText} ${textToTranslate}`;
+				const newTranslatedText = translateMorseToCharacter(textToTranslate);
+
+				// UPDATING VALUES
+				setMorseText(newMorseText);
+				setTranslatedText(`${translatedText}${newTranslatedText}`);
+
+				// RESET
+				setTextToTranslate('');
+				setLastButtonPressed(null);
+			}
+
+			// eslint-disable-next-line no-alert
+			if (!translateMorseToCharacter(textToTranslate)) alert('Nie znaleziono litery, spróbuj ponownie');
+		}
+	}, [writeValueDebounced]);
 
 	return {
 		morseText,
 		translatedText,
 		onButtonMouseDown,
 		onButtonMouseUp,
+		resetAll,
 	};
 };

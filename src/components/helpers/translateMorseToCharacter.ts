@@ -4,7 +4,6 @@ import { morseTable } from 'components/constans/morseTable';
 import { MorseTableInterface } from 'components/models/constans';
 
 export const translateMorseToCharacter = (morseText: string) => {
-	console.log('morseText', morseText);
-	if (!morseText.length) return '';
-	return morseTable[morseText as keyof MorseTableInterface] || '💩';
+	if (!morseText.length || !morseTable[morseText as keyof MorseTableInterface]) return null;
+	return morseTable[morseText as keyof MorseTableInterface];
 };
