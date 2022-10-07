@@ -2,7 +2,7 @@
 import { useMorseTranslator } from 'components/hooks/useMorseTranslator';
 
 // STYLES
-import { StyledMorseTranslator } from 'components/Styles';
+import { StyledMorseTranslator, StyledButton } from 'components/Styles';
 
 export const MorseTranslator = () => {
 	const { morseText, translatedText, onButtonMouseDown, onButtonMouseUp, resetAll } = useMorseTranslator();
@@ -11,7 +11,7 @@ Przytrzymaj aby napisać -`;
 
 	return (
 		<StyledMorseTranslator>
-			<button
+			<StyledButton
 				type="button"
 				title={buttonTitle}
 				aria-label={buttonTitle}
@@ -19,10 +19,10 @@ Przytrzymaj aby napisać -`;
 				onMouseUp={onButtonMouseUp}
 			>
 				Kliknij lub przytrzymaj
-			</button>
-			<button type="button" title="Reset" aria-label="Reset" onClick={() => resetAll()}>
+			</StyledButton>
+			<StyledButton type="button" title="Reset" aria-label="Reset" onClick={() => resetAll()}>
 				Reset
-			</button>
+			</StyledButton>
 
 			<span>Morse: {morseText}</span>
 			<span>Text: {translatedText}</span>

@@ -10,5 +10,6 @@ export const StyledAppWrapper = styled.div`
 	justify-content: center;
 	background-color: #282c34;
 	font-size: 1rem;
+	line-height: 1.25rem;
 	color: white;
 `;
