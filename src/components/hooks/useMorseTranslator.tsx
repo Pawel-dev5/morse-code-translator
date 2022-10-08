@@ -13,6 +13,7 @@ export const useMorseTranslator = () => {
 	const [translatedText, setTranslatedText] = useState<string>('');
 	const [lastButtonPressed, setLastButtonPressed] = useState<number | null>(null);
 	const writeValueDebounced = useDebounce(textToTranslate, inactivityThreshold);
+	const [keyPress, setKeyPress] = useState<number>(0);
 
 	const resetAll = () => {
 		setMorseText('');
@@ -21,18 +22,20 @@ export const useMorseTranslator = () => {
 		setLastButtonPressed(null);
 	};
 
-	const onButtonMouseDown = () => {
+	const onButtonMouseDown = (e: any) => {
+		if (e) setKeyPress(keyPress + 1);
 		setLastButtonPressed(Date.now());
 	};
 
-	const onButtonMouseUp = () => {
+	const onButtonMouseUp = (e: any) => {
 		let timeElapsed;
 		let newText;
 		const now = Date.now();
 
 		setLastButtonPressed(null);
 		if (lastButtonPressed) timeElapsed = now - lastButtonPressed;
-		if (timeElapsed) newText = timeElapsed < dotThreshold ? '.' : '-';
+		if (timeElapsed && !e) newText = timeElapsed < dotThreshold ? '.' : '-';
+		if (e) newText = keyPress > 3 ? '-' : '.';
 		if (newText) setTextToTranslate(`${textToTranslate}${newText}`);
 	};
 
@@ -49,6 +52,7 @@ export const useMorseTranslator = () => {
 
 				// RESET
 				setTextToTranslate('');
+				setKeyPress(0);
 				setLastButtonPressed(null);
 			}
 

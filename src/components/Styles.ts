@@ -10,7 +10,10 @@ export const StyledMorseTranslator = styled.div`
 	gap: 1rem;
 	text-align: left;
 
-	span {
+	span:nth-child(2) {
+		margin-bottom: 3rem;
+	}
+	span:nth-child(n + 3) {
 		width: 100%;
 	}
 `;
