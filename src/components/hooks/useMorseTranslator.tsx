@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 
 // HELPERS
 import { translateMorseToCharacter } from 'components/helpers/translateMorseToCharacter';
 import { useDebounce } from 'components/helpers/useDebounce';
+import { ContextProviderProps } from 'components/models/hooks';
 
 export const useMorseTranslator = () => {
 	const dotThreshold = 200;
@@ -73,3 +74,9 @@ export const useMorseTranslator = () => {
 		resetAll,
 	};
 };
+
+export const ContextData = createContext({} as ReturnType<typeof useMorseTranslator>);
+
+export const ContextProvider = ({ children }: ContextProviderProps) => (
+	<ContextData.Provider value={useMorseTranslator()}>{children}</ContextData.Provider>
+);
