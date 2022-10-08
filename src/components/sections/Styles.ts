@@ -28,4 +28,8 @@ export const StyledButton = styled.button<{ customPadding?: string }>`
 		css`
 			margin-top: ${customPadding};
 		`}
+
+	:hover, :active {
+		background: grey;
+	}
 `;

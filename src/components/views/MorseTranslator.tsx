@@ -14,17 +14,15 @@ export const MorseTranslatorWrapper = () => {
 	const { morseText, translatedText } = useContext(ContextData);
 
 	return (
-		<ContextProvider>
-			<StyledMorseTranslator>
-				<h1>Morse code translator</h1>
-				<Buttons />
+		<StyledMorseTranslator>
+			<h1>Morse code translator</h1>
+			<Buttons />
 
-				<span>Morse: {morseText}</span>
-				<span>Text: {translatedText}</span>
+			<span>Morse: {morseText}</span>
+			<span>Text: {translatedText}</span>
 
-				<Instruction />
-			</StyledMorseTranslator>
-		</ContextProvider>
+			<Instruction />
+		</StyledMorseTranslator>
 	);
 };
 

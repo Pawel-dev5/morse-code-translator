@@ -3,6 +3,8 @@ import GitHubButton from 'react-github-btn';
 
 // CONTEXT
 import { ContextData } from 'components/hooks/useMorseTranslator';
+
+// STYLES
 import { StyledButton } from 'components/sections/Styles';
 
 export const Buttons = () => {
