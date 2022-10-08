@@ -23,7 +23,7 @@ export const useMorseTranslator = () => {
 	};
 
 	const onButtonMouseDown = (e: any) => {
-		if (e) setKeyPress(keyPress + 1);
+		if (e.type === 'keydown') setKeyPress(keyPress + 1);
 		setLastButtonPressed(Date.now());
 	};
 
@@ -34,8 +34,8 @@ export const useMorseTranslator = () => {
 
 		setLastButtonPressed(null);
 		if (lastButtonPressed) timeElapsed = now - lastButtonPressed;
-		if (timeElapsed && !e) newText = timeElapsed < dotThreshold ? '.' : '-';
-		if (e) newText = keyPress > 3 ? '-' : '.';
+		if (timeElapsed && e.type === 'mouseup') newText = timeElapsed < dotThreshold ? '.' : '-';
+		if (e.type === 'keyup') newText = keyPress > 3 ? '-' : '.';
 		if (newText) setTextToTranslate(`${textToTranslate}${newText}`);
 	};
 

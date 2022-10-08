@@ -1,10 +1,17 @@
-import GitHubButton from 'react-github-btn';
-
 // HOOKS
 import { useMorseTranslator } from 'components/hooks/useMorseTranslator';
 
 // STYLES
-import { StyledMorseTranslator, StyledButton } from 'components/Styles';
+import {
+	StyledMorseTranslator,
+	StyledButton,
+	StyledGitHubButton,
+	StyledInstrunctionWrapper,
+	StyledAlphabetWrapper,
+} from 'components/Styles';
+
+// CONSTANS
+import { morseTable } from 'components/constans/morseTable';
 
 export const MorseTranslator = () => {
 	const { morseText, translatedText, onButtonMouseDown, onButtonMouseUp, resetAll } = useMorseTranslator();
@@ -14,7 +21,7 @@ Przytrzymaj aby napisać -`;
 	return (
 		<StyledMorseTranslator>
 			<h1>Morse code translator</h1>
-			<GitHubButton href="https://github.com/Pawel-dev5/morse-code-translator">Github</GitHubButton>
+			<StyledGitHubButton href="https://github.com/Pawel-dev5/morse-code-translator">Github</StyledGitHubButton>
 
 			<StyledButton
 				type="button"
@@ -36,6 +43,22 @@ Przytrzymaj aby napisać -`;
 
 			<span>Morse: {morseText}</span>
 			<span>Text: {translatedText}</span>
+
+			<StyledInstrunctionWrapper>
+				<h3>Instrukcja:</h3>
+				<span>
+					Kliknij przycisk aby napisać . <br />
+					Przytrzymaj przycisk aby napisać -
+				</span>
+
+				<h3>Alfabet</h3>
+				{Object.entries(morseTable).map(([key, value]) => (
+					<StyledAlphabetWrapper key={key}>
+						<span>{value}</span>
+						<span>{key}</span>
+					</StyledAlphabetWrapper>
+				))}
+			</StyledInstrunctionWrapper>
 		</StyledMorseTranslator>
 	);
 };
