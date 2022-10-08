@@ -65,7 +65,7 @@ export const useMorseTranslator = () => {
 			}
 		}
 	}, [writeValueDebounced]);
-
+	console.log(morseText);
 	return {
 		morseText,
 		translatedText,
