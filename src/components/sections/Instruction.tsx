@@ -10,6 +10,13 @@ export const Instruction = () => (
 		<span>
 			Kliknij przycisk aby napisać . <br />
 			Przytrzymaj przycisk aby napisać -
+			<br />
+			<br />
+			lub
+			<br />
+			<br />
+			Kliknij Spację aby napisać . <br />
+			Kliknij B aby napisać -
 		</span>
 
 		<h3>Alfabet</h3>

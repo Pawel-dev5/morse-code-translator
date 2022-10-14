@@ -1,9 +1,10 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
 
 // HELPERS
 import { translateMorseToCharacter } from 'components/helpers/translateMorseToCharacter';
 import { useDebounce } from 'components/helpers/useDebounce';
 import { ContextProviderProps } from 'components/models/hooks';
+import useKeyboardShortcut from 'use-keyboard-shortcut';
 
 export const useMorseTranslator = () => {
 	const dotThreshold = 200;
@@ -13,8 +14,52 @@ export const useMorseTranslator = () => {
 	const [textToTranslate, setTextToTranslate] = useState<string>('');
 	const [translatedText, setTranslatedText] = useState<string>('');
 	const [lastButtonPressed, setLastButtonPressed] = useState<number | null>(null);
+
 	const writeValueDebounced = useDebounce(textToTranslate, inactivityThreshold);
-	const [keyPress, setKeyPress] = useState<number>(0);
+
+	// BUTTON HANDLER
+	const onButtonMouseDown = () => setLastButtonPressed(Date.now());
+	const onButtonMouseUp = () => {
+		let timeElapsed;
+		let newText;
+		const now = Date.now();
+
+		if (lastButtonPressed) timeElapsed = now - lastButtonPressed;
+		if (timeElapsed) {
+			newText = timeElapsed < dotThreshold ? `${textToTranslate}.` : `${textToTranslate}-`;
+			setTextToTranslate(newText);
+		}
+	};
+
+	// TRANALSTOR
+	useEffect(() => {
+		const newText = translateMorseToCharacter(textToTranslate !== '' ? textToTranslate : '');
+
+		if (newText) {
+			const newMorseText = `${morseText} ${textToTranslate}`;
+			// UPDATING VALUES
+			setMorseText(newMorseText);
+			setTranslatedText(`${translatedText}${newText}`);
+		}
+
+		if (!newText && textToTranslate !== '') {
+			// eslint-disable-next-line no-alert
+			alert('Nie znaleziono litery, spróbuj ponownie');
+		}
+		// RESET
+		setLastButtonPressed(null);
+		setTextToTranslate('');
+	}, [writeValueDebounced]);
+
+	// KEYBOARD HANDLER
+	const options = { overrideSystem: true, ignoreInputFields: true, repeatOnHold: false };
+	const keyB = ['B'];
+	const keySpace = [' '];
+	const handleKeyboardShortDot = useCallback(() => setTextToTranslate(`${textToTranslate}.`), [textToTranslate]);
+	const handleKeyboardShortDash = useCallback(() => setTextToTranslate(`${textToTranslate}-`), [textToTranslate]);
+
+	useKeyboardShortcut(keyB, handleKeyboardShortDash, options);
+	useKeyboardShortcut(keySpace, handleKeyboardShortDot, options);
 
 	const resetAll = () => {
 		setMorseText('');
@@ -22,49 +67,6 @@ export const useMorseTranslator = () => {
 		setTranslatedText('');
 		setLastButtonPressed(null);
 	};
-
-	const onButtonMouseDown = (e: any) => {
-		if (e.type === 'keydown') setKeyPress(keyPress + 1);
-		setLastButtonPressed(Date.now());
-	};
-
-	const onButtonMouseUp = (e: any) => {
-		let timeElapsed;
-		let newText;
-		const now = Date.now();
-
-		setLastButtonPressed(null);
-		if (lastButtonPressed) timeElapsed = now - lastButtonPressed;
-		if (timeElapsed && e.type === 'mouseup') newText = timeElapsed < dotThreshold ? '.' : '-';
-		if (e.type === 'keyup') newText = keyPress > 3 ? '-' : '.';
-		if (newText) setTextToTranslate(`${textToTranslate}${newText}`);
-	};
-
-	useEffect(() => {
-		if (textToTranslate !== '') {
-			const newText = translateMorseToCharacter(textToTranslate);
-
-			if (newText) {
-				const newMorseText = `${morseText} ${textToTranslate}`;
-
-				// UPDATING VALUES
-				setMorseText(newMorseText);
-				setTranslatedText(`${translatedText}${newText}`);
-
-				// RESET
-				setTextToTranslate('');
-				setKeyPress(0);
-				setLastButtonPressed(null);
-			}
-
-			if (!newText) {
-				// eslint-disable-next-line no-alert
-				alert('Nie znaleziono litery, spróbuj ponownie');
-				setTextToTranslate('');
-				setLastButtonPressed(null);
-			}
-		}
-	}, [writeValueDebounced]);
 
 	return {
 		morseText,
