@@ -24,8 +24,6 @@ Przytrzymaj aby napisać -`;
 				aria-label={buttonTitle}
 				onMouseDown={onButtonMouseDown}
 				onMouseUp={onButtonMouseUp}
-				onKeyDown={(e) => e.code === 'Space' && onButtonMouseDown(e)}
-				onKeyUp={(e) => e.code === 'Space' && onButtonMouseUp(e)}
 				tabIndex={0}
 				customPadding="3rem"
 			>
