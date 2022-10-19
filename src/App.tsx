@@ -6,7 +6,6 @@ import { StyledAppWrapper } from 'Styles';
 
 const App = () => (
 	<StyledAppWrapper>
-		{/* elo */}
 		<MorseTranslator />
 	</StyledAppWrapper>
 );
